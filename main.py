@@ -1,8 +1,24 @@
-import os
+import os, time, json, requests
+import pyttsx3
 import telebot
 import yfinance as yf
 
-API_KEY = os.environ['API']
+#Set up API
+API_KEY = os.environ['API']#GET TELEGRAM BOT API KEY
+NEWS_KEY = os.environ['NEWS_API']#GET NEWSAPI.ORG KEY
+NEWS_URL = ('https://newsapi.org/v2/top-headlines?country=in&apiKey=1d87551c47704fc886a0ec41f614fd25')
+#NEWS_URL += NEWS_KEY
+
+#Engines
+newsEngine = pyttsx3.init()
+rate = newsEngine.getProperty('rate')
+volume = newsEngine.getProperty('volume')
+sound = newsEngine.getProperty('voices')
+
+newsEngine.setProperty('rate', rate + 10)
+newsEngine.setProperty('volume', volume - 0.60)
+newsEngine.setProperty('voice', 'sound[1].id')
+
 bot = telebot.TeleBot(API_KEY)
 
 #Start convo
@@ -10,7 +26,33 @@ bot = telebot.TeleBot(API_KEY)
 def start(message):
   bot.reply_to(message, "Here are my commands")
   bot.send_message(message.chat.id, "/stocks - get latest stock prices (gme, amc, nok, tsla)")
+  bot.send_message(message.chat.id, "/news - get latest news")
 
+#Get latest news
+@bot.message_handler(commands=['news'])
+def get_news(message):
+  try:
+    response = requests.get(NEWS_URL)
+  except:
+    print("can, t access link, plz check you internet ")
+    
+  news = json.loads(response.text)
+    
+    
+  for new in news['articles']:
+      bot.send_message("##############################################################\n")
+      bot.send_message(str(new['title']), "\n\n")
+      #newsEngine.say(str(new['title']))
+      bot.send_message('______________________________________________________\n')
+    
+      newsEngine.runAndWait()
+    
+      bot.send_message(str(new['description']), "\n\n")
+      #newsEngine.say(str(new['description']))
+      newsEngine.runAndWait()
+      bot.send_message("..............................................................")
+      time.sleep(2)
+  
 #Get latest stocks
 @bot.message_handler(commands=['stocks'])
 def get_stocks(message):

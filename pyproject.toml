@@ -10,6 +10,10 @@ numpy = "^1.22.2"
 replit = "^3.2.4"
 pyTelegramBotAPI = "^4.5.1"
 yfinance = "^0.1.72"
+pyttsx3 = "^2.90"
+requests = "^2.28.1"
+json5 = "^0.9.10"
+newsapi = "^0.1.1"
 
 [tool.poetry.dev-dependencies]
 
