@@ -1,5 +1,4 @@
-import os, time, json, requests
-import pyttsx3
+import os, time, random
 import telebot
 from newsapi import NewsApiClient
 import yfinance as yf
@@ -10,28 +9,47 @@ NEWS_KEY = os.environ['NEWS_API']#GET NEWSAPI.ORG KEY
 
 bot = telebot.TeleBot(API_KEY)
 
-#Get news raw
+#Settings
 newsapi = NewsApiClient(api_key = NEWS_KEY)
+news_rate = 5
 
 #Start convo
 @bot.message_handler(commands=["start"])
 def start(message):
   bot.reply_to(message, "Here are my commands")
+  bot.send_message(message.chat.id, "/about - About this bot")
+  bot.send_message(message.chat.id, "/settings - Set number of news that you want to get per request TODO")
   bot.send_message(message.chat.id, "/stocks - get latest stock prices (gme, amc, nok, tsla)")
   bot.send_message(message.chat.id, "/news - get latest hottest news")
-  bot.send_message(message.chat.id, "/usa_news - get latest news from USA")
-  bot.send_message(message.chat.id, "/business_news - get latest business news from around the world")
-  bot.send_message(message.chat.id, "/tech_news - get latest news from USA")
+  bot.send_message(message.chat.id, "/usa_news - get latest news from USA TODO")
+  bot.send_message(message.chat.id, "/business_news - get latest business news from around the world TODO")
+  bot.send_message(message.chat.id, "/tech_news - get latest news from USA TODO")
 
 #Get latest news
 @bot.message_handler(commands=["news"])
 def news(message):
-  global newsapi
-  all_articles = newsapi.get_everything(q='bitcoin',sources='bbc-news,the-verge',domains='bbc.co.uk,techcrunch.com',language='en',sort_by='relevancy')
+  global newsapi, news_rate
+  #q='bitcoin',
+  all_articles = newsapi.get_everything(sources='bbc-news,the-verge',domains='bbc.co.uk,techcrunch.com',language='en',sort_by='relevancy')
   data = newsapi.get_sources()
-  #print(data)
-  print(all_articles)
+  #print(all_articles)
   bot.send_message(message.chat.id, "We got some HOT news")
+  news_count = 0 
+  for news in all_articles['articles']:
+    news_count += 1
+    bot.send_message(message.chat.id, 101*"-")
+    bot.send_message(message.chat.id, str(news['title']))
+    bot.send_message(message.chat.id, str(news['description']))
+    bot.send_message(message.chat.id, str(news['url']))
+    #Rework date
+    date = str(news['publishedAt'])
+    date = date.replace('T',' ')
+    date = date.replace('Z',' ')
+    bot.send_message(message.chat.id, "Published at " + date)
+    bot.send_message(message.chat.id, "By " + str(news['author']))
+    #Stop loop
+    if news_count >= news_rate:
+      break
 
 #Get business news
 @bot.message_handler(commands=["business_news"])
@@ -112,6 +130,11 @@ def send_price(message):
     bot.send_message(message.chat.id, data['Close'].to_string(header=False))
   else:
     bot.send_message(message.chat.id, 'No data?!')
+
+#about
+@bot.message_handler(commands=["about"])
+def about(message):
+  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.0.4 Last Update: 17/10/2022")
 
 #Keep checking for new messages
 print("Bot Is Online!")
