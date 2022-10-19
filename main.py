@@ -1,4 +1,5 @@
 import os, time, random
+from datetime import date
 import telebot
 from newsapi import NewsApiClient
 import yfinance as yf
@@ -12,6 +13,7 @@ bot = telebot.TeleBot(API_KEY)
 #Settings
 newsapi = NewsApiClient(api_key = NEWS_KEY)
 news_rate = 5
+today_date = date.today()
 
 #Start convo
 @bot.message_handler(commands=["start"])
@@ -21,23 +23,23 @@ def start(message):
   bot.send_message(message.chat.id, "/settings - Set number of news that you want to get per request TODO")
   bot.send_message(message.chat.id, "/stocks - get latest stock prices (gme, amc, nok, tsla)")
   bot.send_message(message.chat.id, "/news - get latest hottest news")
-  bot.send_message(message.chat.id, "/usa_news - get latest news from USA TODO")
-  bot.send_message(message.chat.id, "/business_news - get latest business news from around the world TODO")
-  bot.send_message(message.chat.id, "/tech_news - get latest news from USA TODO")
+  bot.send_message(message.chat.id, "/usa_news - get latest news from greatest country in the world (USA)")
+  bot.send_message(message.chat.id, "/russia_news - get latest news from most communistic country (Russia)")
+  bot.send_message(message.chat.id, "/business_news - get latest business news from around the world")
+  bot.send_message(message.chat.id, "/tech_news - get latest news from USA")
 
 #Get latest news
 @bot.message_handler(commands=["news"])
 def news(message):
-  global newsapi, news_rate
-  #q='bitcoin',
-  all_articles = newsapi.get_everything(sources='bbc-news,the-verge',domains='bbc.co.uk,techcrunch.com',language='en',sort_by='relevancy')
+  global newsapi, news_rate, today_date
+  all_articles = newsapi.get_everything(sources='bbc-news,the-verge,the-washington-post, abc-news, usa-today, the-wall-street-journal', from_param=today_date, language='en',sort_by='relevancy')
   data = newsapi.get_sources()
-  #print(all_articles)
+  print(data)
   bot.send_message(message.chat.id, "We got some HOT news")
   news_count = 0 
   for news in all_articles['articles']:
     news_count += 1
-    bot.send_message(message.chat.id, 101*"-")
+    bot.send_message(message.chat.id, 80*"-")
     bot.send_message(message.chat.id, str(news['title']))
     bot.send_message(message.chat.id, str(news['description']))
     bot.send_message(message.chat.id, str(news['url']))
@@ -54,30 +56,102 @@ def news(message):
 #Get business news
 @bot.message_handler(commands=["business_news"])
 def business_news(message):
-  global newsapi
-  business_news = newsapi.get_top_headlines(language = "en", category="business")
+  global newsapi, news_rate
+  all_articles = newsapi.get_top_headlines(category='business', country='us', language='en')
   data = newsapi.get_sources()
-  print(business_news)
-  bot.send_message(message.chat.id, "We got some latest business news")
+  print(data)
+  bot.send_message(message.chat.id, "We got some HOT business news")
+  news_count = 0 
+  for news in all_articles['articles']:
+    news_count += 1
+    bot.send_message(message.chat.id, 80*"-")
+    bot.send_message(message.chat.id, str(news['title']))
+    bot.send_message(message.chat.id, str(news['description']))
+    bot.send_message(message.chat.id, str(news['url']))
+    #Rework date
+    date = str(news['publishedAt'])
+    date = date.replace('T',' ')
+    date = date.replace('Z',' ')
+    bot.send_message(message.chat.id, "Published at " + date)
+    bot.send_message(message.chat.id, "By " + str(news['author']))
+    #Stop loop
+    if news_count >= news_rate:
+      break
+
+#Get russian news
+@bot.message_handler(commands=["russia_news"])
+def russian_news(message):
+  global newsapi, news_rate
+  all_articles = newsapi.get_top_headlines(category='general', country='ru', language='ru')
+  data = newsapi.get_sources()
+  print(data)
+  bot.send_message(message.chat.id, "We got some RED Russian news")
+  news_count = 0 
+  for news in all_articles['articles']:
+    news_count += 1
+    bot.send_message(message.chat.id, 80*"-")
+    bot.send_message(message.chat.id, str(news['title']))
+    bot.send_message(message.chat.id, str(news['description']))
+    bot.send_message(message.chat.id, str(news['url']))
+    #Rework date
+    date = str(news['publishedAt'])
+    date = date.replace('T',' ')
+    date = date.replace('Z',' ')
+    bot.send_message(message.chat.id, "Published at " + date)
+    bot.send_message(message.chat.id, "By " + str(news['author']))
+    #Stop loop
+    if news_count >= news_rate:
+      break
+
+#Get american news
+@bot.message_handler(commands=["usa_news"])
+def usa_news(message):
+  global newsapi, news_rate
+  all_articles = newsapi.get_top_headlines(category='general', country='us', language='en')
+  data = newsapi.get_sources()
+  print(data)
+  bot.send_message(message.chat.id, "We got some HOT American News")
+  news_count = 0 
+  for news in all_articles['articles']:
+    news_count += 1
+    bot.send_message(message.chat.id, 80*"-")
+    bot.send_message(message.chat.id, str(news['title']))
+    bot.send_message(message.chat.id, str(news['description']))
+    bot.send_message(message.chat.id, str(news['url']))
+    #Rework date
+    date = str(news['publishedAt'])
+    date = date.replace('T',' ')
+    date = date.replace('Z',' ')
+    bot.send_message(message.chat.id, "Published at " + date)
+    bot.send_message(message.chat.id, "By " + str(news['author']))
+    #Stop loop
+    if news_count >= news_rate:
+      break
 
 #Get tech news
 @bot.message_handler(commands=["tech_news"])
 def tech_news(message):
-  global newsapi
-  tech_news = newsapi.get_top_headlines(language = "en", category="technology")
+  global newsapi, news_rate
+  all_articles = newsapi.get_top_headlines(category='technology', language='en')
   data = newsapi.get_sources()
-  print(tech_news)
-  bot.send_message(message.chat.id, "We got some latest tech news")
-
-#Get usa news
-@bot.message_handler(commands=["usa_news"])
-def usa_news(message):
-  global newsapi
-  usa_news = newsapi.get_top_headlines(language = "en", country="us")
-  data = newsapi.get_sources()
-  print(usa_news)
-  bot.send_message(message.chat.id, "We got some latest news from greatest Country in the world!")
-  
+  print(data)
+  bot.send_message(message.chat.id, "We got some HOT Tech news")
+  news_count = 0 
+  for news in all_articles['articles']:
+    news_count += 1
+    bot.send_message(message.chat.id, 80*"-")
+    bot.send_message(message.chat.id, str(news['title']))
+    bot.send_message(message.chat.id, str(news['description']))
+    bot.send_message(message.chat.id, str(news['url']))
+    #Rework date
+    date = str(news['publishedAt'])
+    date = date.replace('T',' ')
+    date = date.replace('Z',' ')
+    bot.send_message(message.chat.id, "Published at " + date)
+    bot.send_message(message.chat.id, "By " + str(news['author']))
+    #Stop loop
+    if news_count >= news_rate:
+      break
   
 #Get latest stocks
 @bot.message_handler(commands=['stocks'])
