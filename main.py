@@ -28,6 +28,11 @@ def start(message):
   bot.send_message(message.chat.id, "/russia_news - get latest news from most communistic country (Russia)")
   bot.send_message(message.chat.id, "/business_news - get latest business news from around the world")
   bot.send_message(message.chat.id, "/tech_news - get latest news from USA")
+  bot.send_message(message.chat.id, "/media_news - get latest media news")
+  bot.send_message(message.chat.id, "/sport_news - get latest sports news")
+  bot.send_message(message.chat.id, "/science_news - get latest science news")
+  bot.send_message(message.chat.id, "/health_news - get latest health and medicare news")
+  
 
 #function to send news to the user
 def get_news(articles: dict, type: str, message):
@@ -57,9 +62,10 @@ def get_news(articles: dict, type: str, message):
 def news(message):
   global newsapi, today_date
   try:
-    all_articles = newsapi.get_everything(sources='bbc-news,the-verge,the-washington-post, abc-news, usa-today, the-wall-street-journal, ign, wired-de, wired, the-washington-times, medical-news-today', from_param=today_date, language='en',sort_by='relevancy')
-    #data = newsapi.get_sources()
-    #print(data)
+    #all_articles = newsapi.get_everything(sources='bbc-news,the-verge,the-washington-post, abc-news, usa-today, the-wall-street-journal, ign, wired-de, wired, the-washington-times, medical-news-today', from_param=today_date, language='en',sort_by='relevancy')
+    all_articles = newsapi.get_top_headlines(category='general', country='us', language='en')
+    data = newsapi.get_sources()
+    print(data)
     get_news(all_articles, "general", message)
   except:
     print("Error occured")
@@ -109,13 +115,57 @@ def tech_news(message):
   except:
     print("Error occured")
     bot.send_message(message.chat.id, "Sorry error occured, try again later")
-  
+
+#Get sports news 
+@bot.message_handler(commands=["sport_news"])
+def sport_news(message):
+  global newsapi, news_rate
+  try:
+    all_articles = newsapi.get_top_headlines(category='sports', language='en')
+    get_news(all_articles, "sports", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
+
+#Get entertainment news 
+@bot.message_handler(commands=["media_news"])
+def media_news(message):
+  global newsapi, news_rate
+  try:
+    all_articles = newsapi.get_top_headlines(category='entertainment', language='en')
+    get_news(all_articles, "media", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
+
+#Get science news 
+@bot.message_handler(commands=["science_news"])
+def science_news(message):
+  global newsapi, news_rate
+  try:
+    all_articles = newsapi.get_top_headlines(category='science', language='en')
+    get_news(all_articles, "science", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
+
+#Get health news 
+@bot.message_handler(commands=["health_news"])
+def health_news(message):
+  global newsapi, news_rate
+  try:
+    all_articles = newsapi.get_top_headlines(category='health', language='en')
+    get_news(all_articles, "health", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
+    
 #Get latest stocks
 @bot.message_handler(commands=['stocks'])
 def get_stocks(message):
   answer = ""
   #Choose stocks
-  stocks = ["gme", "amc", "nok", "tsla"]
+  stocks = ["gme", "amc", "nok", "tsla", "msft", "aapl", "goog"]
   stock_data = []
   for stock in stocks:
     data = yf.download(tickers=stock, period='2d', interval='1d')#Download data for the period of 2 days
@@ -165,7 +215,7 @@ def send_price(message):
 #about
 @bot.message_handler(commands=["about"])
 def about(message):
-  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.0.5 Last Update: 26/10/2022")
+  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.1.0 Last Update: 26/10/2022")
 
 #Keep checking for new messages
 print("Bot Is Online!")
