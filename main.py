@@ -28,45 +28,11 @@ def start(message):
   bot.send_message(message.chat.id, "/business_news - get latest business news from around the world")
   bot.send_message(message.chat.id, "/tech_news - get latest news from USA")
 
-#Get latest news
-@bot.message_handler(commands=["news"])
-def news(message):
-  global newsapi, news_rate, today_date
-  try:
-    all_articles = newsapi.get_everything(sources='bbc-news,the-verge,the-washington-post, abc-news, usa-today, the-wall-street-journal, ign, wired-de, wired, the-washington-times, medical-news-today', from_param=today_date, language='en',sort_by='relevancy')
-    data = newsapi.get_sources()
-    print(data)
-    bot.send_message(message.chat.id, "We got some HOT news")
-    news_count = 0
-    for news in all_articles['articles']:
-      news_count += 1
-      bot.send_message(message.chat.id, 80*"-")
-      bot.send_message(message.chat.id, str(news['title']))
-      bot.send_message(message.chat.id, str(news['description']))
-      bot.send_message(message.chat.id, str(news['url']))
-      #Rework date
-      date = str(news['publishedAt'])
-      date = date.replace('T',' ')
-      date = date.replace('Z',' ')
-      bot.send_message(message.chat.id, "Published at " + date)
-      bot.send_message(message.chat.id, "By " + str(news['author']))
-      #Stop loop
-      if news_count >= news_rate:
-        break
-  except:
-    print("Error occured")
-    bot.send_message(message.chat.id, "Sorry error occured, try again later")
-
-#Get business news
-@bot.message_handler(commands=["business_news"])
-def business_news(message):
-  global newsapi, news_rate
-  all_articles = newsapi.get_top_headlines(category='business', country='us', language='en')
-  data = newsapi.get_sources()
-  print(data)
-  bot.send_message(message.chat.id, "We got some HOT business news")
-  news_count = 0 
-  for news in all_articles['articles']:
+def get_news(articles: dict, type: str, message):
+  global news_rate
+  bot.send_message(message.chat.id, "We got some HOT " + type + " news")
+  news_count = 0
+  for news in articles['articles']:
     news_count += 1
     bot.send_message(message.chat.id, 80*"-")
     bot.send_message(message.chat.id, str(news['title']))
@@ -82,6 +48,30 @@ def business_news(message):
     if news_count >= news_rate:
       break
 
+#Get latest news
+@bot.message_handler(commands=["news"])
+def news(message):
+  global newsapi, today_date
+  try:
+    all_articles = newsapi.get_everything(sources='bbc-news,the-verge,the-washington-post, abc-news, usa-today, the-wall-street-journal, ign, wired-de, wired, the-washington-times, medical-news-today', from_param=today_date, language='en',sort_by='relevancy')
+    data = newsapi.get_sources()
+    print(data)
+    get_news(all_articles, "general", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
+    
+
+#Get business news
+@bot.message_handler(commands=["business_news"])
+def business_news(message):
+  global newsapi, news_rate
+  try:
+    all_articles = newsapi.get_top_headlines(category='business', country='us', language='en')
+    get_news(all_articles, "business", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
 #Get russian news
 @bot.message_handler(commands=["russia_news"])
 def russian_news(message):
