@@ -3,6 +3,7 @@ from datetime import date
 import telebot
 from newsapi import NewsApiClient
 import yfinance as yf
+from telebot import types
 
 #Set up API
 API_KEY = os.environ['API']#GET TELEGRAM BOT API KEY
@@ -34,9 +35,18 @@ def start(message):
   bot.send_message(message.chat.id, "/science_news - get latest science news")
   bot.send_message(message.chat.id, "/health_news - get latest health and medicare news")
 
+#Ask user a question
+def answer(message):
+  markup = types.ReplyKeyboardMarkup(row_width=2)
+  yesbtn = types.KeyboardButton('/yes')
+  nobtn = types.KeyboardButton('/no')
+  markup.add(yesbtn, nobtn)
+  bot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
 
+@bot.message_handler(commands=["yes"])
+def yes(message):
+  bot.send_message(message.chat.id, "Nice")
   
-
 #function to send news to the user
 def get_news(articles: dict, type: str, message):
   global news_rate, news_popularity
@@ -58,7 +68,10 @@ def get_news(articles: dict, type: str, message):
     bot.send_message(message.chat.id, "By " + str(news['author']))
     #Stop loop
     if news_count >= news_rate:
-      break
+      bot.send_message(message.chat.id, "Would you like to see more news ?")
+      answer(message)
+      time.sleep(30)
+
 
 #Get latest news
 @bot.message_handler(commands=["news"])
@@ -68,7 +81,7 @@ def news(message):
     #all_articles = newsapi.get_everything(sources='bbc-news,the-verge,the-washington-post, abc-news, usa-today, the-wall-street-journal, ign, wired-de, wired, the-washington-times, medical-news-today', from_param=today_date, language='en',sort_by='relevancy')
     all_articles = newsapi.get_top_headlines(category='general', country='us', language='en')
     data = newsapi.get_sources()
-    print(data)
+    #print(data)
     get_news(all_articles, "general", message)
   except:
     print("Error occured")
@@ -223,7 +236,7 @@ def about(message):
 #if fucker wants to edit the message
 @bot.edited_message_handler()
 def edited(message):
-    bot.reply_to(message,'I saw it! You edited message!Dont try to mix up the court evidence!')
+  bot.reply_to(message,'I saw it! You edited message!Dont try to mix up the court evidence!')
 
 
 #Keep checking for new messages
