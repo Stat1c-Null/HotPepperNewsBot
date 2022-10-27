@@ -13,6 +13,7 @@ bot = telebot.TeleBot(API_KEY)
 #Settings
 newsapi = NewsApiClient(api_key = NEWS_KEY)
 news_rate = 5
+news_popularity = 0 
 today_date = date.today()
 
 #Start convo
@@ -28,8 +29,11 @@ def start(message):
   bot.send_message(message.chat.id, "/business_news - get latest business news from around the world")
   bot.send_message(message.chat.id, "/tech_news - get latest news from USA")
 
+#function to send news to the user
 def get_news(articles: dict, type: str, message):
-  global news_rate
+  global news_rate, news_popularity
+  news_popularity += 1
+  print("Someone is getting news today again for " + str(news_popularity) + " time today")
   bot.send_message(message.chat.id, "We got some HOT " + type + " news")
   news_count = 0
   for news in articles['articles']:
@@ -54,8 +58,8 @@ def news(message):
   global newsapi, today_date
   try:
     all_articles = newsapi.get_everything(sources='bbc-news,the-verge,the-washington-post, abc-news, usa-today, the-wall-street-journal, ign, wired-de, wired, the-washington-times, medical-news-today', from_param=today_date, language='en',sort_by='relevancy')
-    data = newsapi.get_sources()
-    print(data)
+    #data = newsapi.get_sources()
+    #print(data)
     get_news(all_articles, "general", message)
   except:
     print("Error occured")
@@ -72,80 +76,39 @@ def business_news(message):
   except:
     print("Error occured")
     bot.send_message(message.chat.id, "Sorry error occured, try again later")
+    
 #Get russian news
 @bot.message_handler(commands=["russia_news"])
 def russian_news(message):
   global newsapi, news_rate
-  all_articles = newsapi.get_top_headlines(category='general', country='ru', language='ru')
-  data = newsapi.get_sources()
-  print(data)
-  bot.send_message(message.chat.id, "We got some RED Russian news")
-  news_count = 0 
-  for news in all_articles['articles']:
-    news_count += 1
-    bot.send_message(message.chat.id, 80*"-")
-    bot.send_message(message.chat.id, str(news['title']))
-    bot.send_message(message.chat.id, str(news['description']))
-    bot.send_message(message.chat.id, str(news['url']))
-    #Rework date
-    date = str(news['publishedAt'])
-    date = date.replace('T',' ')
-    date = date.replace('Z',' ')
-    bot.send_message(message.chat.id, "Published at " + date)
-    bot.send_message(message.chat.id, "By " + str(news['author']))
-    #Stop loop
-    if news_count >= news_rate:
-      break
+  try:
+    all_articles = newsapi.get_top_headlines(category='general', country='ru', language='ru')
+    get_news(all_articles, "russian", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
 
 #Get american news
 @bot.message_handler(commands=["usa_news"])
 def usa_news(message):
   global newsapi, news_rate
-  all_articles = newsapi.get_top_headlines(category='general', country='us', language='en')
-  data = newsapi.get_sources()
-  print(data)
-  bot.send_message(message.chat.id, "We got some HOT American News")
-  news_count = 0 
-  for news in all_articles['articles']:
-    news_count += 1
-    bot.send_message(message.chat.id, 80*"-")
-    bot.send_message(message.chat.id, str(news['title']))
-    bot.send_message(message.chat.id, str(news['description']))
-    bot.send_message(message.chat.id, str(news['url']))
-    #Rework date
-    date = str(news['publishedAt'])
-    date = date.replace('T',' ')
-    date = date.replace('Z',' ')
-    bot.send_message(message.chat.id, "Published at " + date)
-    bot.send_message(message.chat.id, "By " + str(news['author']))
-    #Stop loop
-    if news_count >= news_rate:
-      break
+  try:
+    all_articles = newsapi.get_top_headlines(category='general', country='us', language='en')
+    get_news(all_articles, "american", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
 
 #Get tech news
 @bot.message_handler(commands=["tech_news"])
 def tech_news(message):
   global newsapi, news_rate
-  all_articles = newsapi.get_top_headlines(category='technology', language='en')
-  data = newsapi.get_sources()
-  print(data)
-  bot.send_message(message.chat.id, "We got some HOT Tech news")
-  news_count = 0 
-  for news in all_articles['articles']:
-    news_count += 1
-    bot.send_message(message.chat.id, 80*"-")
-    bot.send_message(message.chat.id, str(news['title']))
-    bot.send_message(message.chat.id, str(news['description']))
-    bot.send_message(message.chat.id, str(news['url']))
-    #Rework date
-    date = str(news['publishedAt'])
-    date = date.replace('T',' ')
-    date = date.replace('Z',' ')
-    bot.send_message(message.chat.id, "Published at " + date)
-    bot.send_message(message.chat.id, "By " + str(news['author']))
-    #Stop loop
-    if news_count >= news_rate:
-      break
+  try:
+    all_articles = newsapi.get_top_headlines(category='technology', language='en')
+    get_news(all_articles, "tech", message)
+  except:
+    print("Error occured")
+    bot.send_message(message.chat.id, "Sorry error occured, try again later")
   
 #Get latest stocks
 @bot.message_handler(commands=['stocks'])
@@ -202,7 +165,7 @@ def send_price(message):
 #about
 @bot.message_handler(commands=["about"])
 def about(message):
-  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.0.4 Last Update: 17/10/2022")
+  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.0.5 Last Update: 26/10/2022")
 
 #Keep checking for new messages
 print("Bot Is Online!")
