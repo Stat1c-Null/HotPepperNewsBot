@@ -21,7 +21,8 @@ today_date = date.today()
 def start(message):
   bot.reply_to(message, "Here are my commands")
   bot.send_message(message.chat.id, "/about - About this bot")
-  bot.send_message(message.chat.id, "/settings - Set number of news that you want to get per request TODO")
+  bot.send_message(message.chat.id, "/news_rate - Set number of news that you want to get per request TODO")
+  bot.send_message(message.chat.id, "/daily_sender - Get daily news reminders on topics that interest you TODO")
   bot.send_message(message.chat.id, "/stocks - get latest stock prices (gme, amc, nok, tsla)")
   bot.send_message(message.chat.id, "/news - get latest hottest news")
   bot.send_message(message.chat.id, "/usa_news - get latest news from greatest country in the world (USA)")
@@ -32,6 +33,8 @@ def start(message):
   bot.send_message(message.chat.id, "/sport_news - get latest sports news")
   bot.send_message(message.chat.id, "/science_news - get latest science news")
   bot.send_message(message.chat.id, "/health_news - get latest health and medicare news")
+
+
   
 
 #function to send news to the user
@@ -216,6 +219,12 @@ def send_price(message):
 @bot.message_handler(commands=["about"])
 def about(message):
   bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.1.0 Last Update: 26/10/2022")
+
+#if fucker wants to edit the message
+@bot.edited_message_handler()
+def edited(message):
+    bot.reply_to(message,'I saw it! You edited message!Dont try to mix up the court evidence!')
+
 
 #Keep checking for new messages
 print("Bot Is Online!")
