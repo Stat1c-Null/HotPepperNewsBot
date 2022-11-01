@@ -14,7 +14,9 @@ bot = telebot.TeleBot(API_KEY)
 #Settings
 newsapi = NewsApiClient(api_key = NEWS_KEY)
 news_rate = 5
+news_count = 0 
 news_popularity = 0 
+send_more = False
 today_date = date.today()
 
 #Start convo
@@ -41,15 +43,24 @@ def answer(message):
   yesbtn = types.KeyboardButton('/yes')
   nobtn = types.KeyboardButton('/no')
   markup.add(yesbtn, nobtn)
-  bot.send_message(message.chat.id, "Choose one letter:", reply_markup=markup)
+  bot.send_message(message.chat.id, "Choose one option:", reply_markup=markup)
 
 @bot.message_handler(commands=["yes"])
 def yes(message):
+  global news_count, send_more
   bot.send_message(message.chat.id, "Nice")
+  news_count = 0
+  send_more = True
+
+@bot.message_handler(commands=["no"])
+def no(message):
+  global send_more
+  bot.send_message(message.chat.id, "Unfortunate")
+  send_more = False
   
 #function to send news to the user
 def get_news(articles: dict, type: str, message):
-  global news_rate, news_popularity
+  global news_rate, news_popularity, news_count, send_more
   news_popularity += 1
   print("Someone is getting news today again for " + str(news_popularity) + " time today")
   bot.send_message(message.chat.id, "We got some HOT " + type + " news")
@@ -70,7 +81,9 @@ def get_news(articles: dict, type: str, message):
     if news_count >= news_rate:
       bot.send_message(message.chat.id, "Would you like to see more news ?")
       answer(message)
-      time.sleep(30)
+      time.sleep(10)
+      if send_more == False:
+        break
 
 
 #Get latest news
