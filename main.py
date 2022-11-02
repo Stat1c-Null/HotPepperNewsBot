@@ -10,13 +10,12 @@ API_KEY = os.environ['API']#GET TELEGRAM BOT API KEY
 NEWS_KEY = os.environ['NEWS_API']#GET NEWSAPI.ORG KEY
 
 bot = telebot.TeleBot(API_KEY)
-
 #Settings
 newsapi = NewsApiClient(api_key = NEWS_KEY)
 news_rate = 5
 news_count = 0 
 news_popularity = 0 
-send_more = False
+send_more = False #Send more news
 today_date = date.today()
 
 #Start convo
@@ -48,7 +47,7 @@ def answer(message):
 @bot.message_handler(commands=["yes"])
 def yes(message):
   global news_count, send_more
-  bot.send_message(message.chat.id, "Nice")
+  bot.send_message(message.chat.id, "Nice, give me a second to see")
   news_count = 0
   send_more = True
 
@@ -84,8 +83,7 @@ def get_news(articles: dict, type: str, message):
       time.sleep(10)
       if send_more == False:
         break
-
-
+        
 #Get latest news
 @bot.message_handler(commands=["news"])
 def news(message):
@@ -244,13 +242,12 @@ def send_price(message):
 #about
 @bot.message_handler(commands=["about"])
 def about(message):
-  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.1.0 Last Update: 26/10/2022")
+  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.6.0 Last Update: 26/10/2022")
 
 #if fucker wants to edit the message
 @bot.edited_message_handler()
 def edited(message):
   bot.reply_to(message,'I saw it! You edited message!Dont try to mix up the court evidence!')
-
 
 #Keep checking for new messages
 print("Bot Is Online!")

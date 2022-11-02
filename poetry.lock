@@ -259,6 +259,17 @@ pytz = ">=2020.1"
 test = ["hypothesis (>=5.5.3)", "pytest (>=6.0)", "pytest-xdist (>=1.31)"]
 
 [[package]]
+name = "pyinput"
+version = "0.3.2"
+description = "Python library to send inputs to an executable."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pywin32 = "*"
+
+[[package]]
 name = "pyobjc"
 version = "8.5.1"
 description = "Python<->ObjC Interoperability Module"
@@ -2306,7 +2317,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.8.0,<3.9"
-content-hash = "b92a03ebffbc855b7e168902e64a599506d294c1f5aa0e5a9aa45204197ec497"
+content-hash = "f21f61278601a490ce6338d7a607eba9f4d8ca0a257f7821149e154a9719015c"
 
 [metadata.files]
 aiohttp = []
@@ -2324,20 +2335,18 @@ idna = []
 importlib-metadata = []
 itsdangerous = []
 jinja2 = []
-json5 = [
-    {file = "json5-0.9.10-py2.py3-none-any.whl", hash = "sha256:993189671e7412e9cdd8be8dc61cf402e8e579b35f1d1bb20ae6b09baa78bbce"},
-    {file = "json5-0.9.10.tar.gz", hash = "sha256:ad9f048c5b5a4c3802524474ce40a622fae789860a86f10cc4f7e5f9cf9b46ab"},
-]
+json5 = []
 lxml = []
 markupsafe = []
 multidict = []
 multitasking = []
-newsapi = [
-    {file = "newsapi-0.1.1-py2.py3-none-any.whl", hash = "sha256:baef702f6e29fc2736932858528d94f18b2baaef9d330018ba78369e005e1df4"},
-    {file = "newsapi-0.1.1.tar.gz", hash = "sha256:ba6eae31d66f8a804134779c4f4a984fea90ef77be20dba40c2808c75042a69a"},
-]
+newsapi = []
 numpy = []
 pandas = []
+pyinput = [
+    {file = "pyinput-0.3.2-py2.py3-none-any.whl", hash = "sha256:6577bf62b1bd8db9b2609d280cc0d3c958eefefad3d194af92dc33626ebe1d6d"},
+    {file = "pyinput-0.3.2.tar.gz", hash = "sha256:297b156e96788601a244e537523cc523cd39fec9104e91b9dc827c149a84793c"},
+]
 pyobjc = []
 pyobjc-core = []
 pyobjc-framework-accessibility = []
