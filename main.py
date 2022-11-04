@@ -38,24 +38,36 @@ def start(message):
 
 #Ask user a question
 def answer(message):
+  #Add selection keyboard
   markup = types.ReplyKeyboardMarkup(row_width=2)
   yesbtn = types.KeyboardButton('/yes')
   nobtn = types.KeyboardButton('/no')
   markup.add(yesbtn, nobtn)
   bot.send_message(message.chat.id, "Choose one option:", reply_markup=markup)
 
+@bot.message_handler(commands=["news_rate"])
+def newsRate(message):
+  global news_rate
+  markup = types.ForceReply(selective=False, input_field_placeholder="Enter a number")
+  bot.send_message(message.chat.id, "How many news you want to get per request:", disable_notification=True, reply_markup=markup)
+  print(news_rate)
+
 @bot.message_handler(commands=["yes"])
 def yes(message):
   global news_count, send_more
-  bot.send_message(message.chat.id, "Nice, give me a second to see")
   news_count = 0
   send_more = True
+  #Remove selection keyboard
+  markup = types.ReplyKeyboardRemove(selective=False)
+  bot.send_message(message.chat.id, "Nice, give me a second to see", reply_markup=markup)
 
 @bot.message_handler(commands=["no"])
 def no(message):
   global send_more
-  bot.send_message(message.chat.id, "Unfortunate")
   send_more = False
+  #Remove selection keyboard
+  markup = types.ReplyKeyboardRemove(selective=False)
+  bot.send_message(message.chat.id, "Unfortunate", reply_markup=markup)
   
 #function to send news to the user
 def get_news(articles: dict, type: str, message):
@@ -83,6 +95,7 @@ def get_news(articles: dict, type: str, message):
       time.sleep(10)
       if send_more == False:
         break
+
         
 #Get latest news
 @bot.message_handler(commands=["news"])
@@ -242,7 +255,7 @@ def send_price(message):
 #about
 @bot.message_handler(commands=["about"])
 def about(message):
-  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.6.0 Last Update: 26/10/2022")
+  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.7 .0 Last Update: 03/11/2022")
 
 #if fucker wants to edit the message
 @bot.edited_message_handler()
