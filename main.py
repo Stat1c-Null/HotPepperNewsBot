@@ -36,6 +36,10 @@ def start(message):
   bot.send_message(message.chat.id, "/science_news - get latest science news")
   bot.send_message(message.chat.id, "/health_news - get latest health and medicare news")
 
+#Set daily news sender
+@bot.message_handler(commands=["daily_sender"])
+def daily_news(message):
+  bot.send_message(message.chat.id, "Would you like to turn on daily news sender ?")
 #Ask user a question
 def answer(message):
   #Add selection keyboard
