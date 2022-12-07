@@ -1,6 +1,5 @@
-import os, time, random
+import os, time, telebot
 from datetime import date
-import telebot
 from newsapi import NewsApiClient
 import yfinance as yf
 from telebot import types
@@ -17,6 +16,10 @@ news_count = 0
 news_popularity = 0 
 send_more = False #Send more news
 today_date = date.today()
+#Daily sender
+daily_news = True
+hours_delay = 1
+delay = hours_delay * 60 * 60
 
 #Start convo
 @bot.message_handler(commands=["start"])
@@ -40,6 +43,15 @@ def start(message):
 @bot.message_handler(commands=["daily_sender"])
 def daily_news(message):
   bot.send_message(message.chat.id, "Would you like to turn on daily news sender ?")
+  bot.send_message(message.chat.id, "How many news would you like to get at time ?")
+  bot.send_message(message.chat.id, "How often would you like to receive automated messages ? Enter number of hours")
+  #await daily_news_send()
+  
+def daily_news_send():
+  #await asyncio.sleep(5)
+  bot.send_message('DAILY NEWS')
+  
+  
 #Ask user a question
 def answer(message):
   #Add selection keyboard
@@ -54,6 +66,7 @@ def newsRate(message):
   global news_rate
   markup = types.ForceReply(selective=False, input_field_placeholder="Enter a number")
   bot.send_message(message.chat.id, "How many news you want to get per request:", disable_notification=True, reply_markup=markup)
+  news_rate = markup
   print(news_rate)
 
 @bot.message_handler(commands=["yes"])
@@ -259,7 +272,7 @@ def send_price(message):
 #about
 @bot.message_handler(commands=["about"])
 def about(message):
-  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.7 .0 Last Update: 03/11/2022")
+  bot.send_message(message.chat.id, "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v0.8.0 Last Update: 06/12/2022")
 
 #if fucker wants to edit the message
 @bot.edited_message_handler()
