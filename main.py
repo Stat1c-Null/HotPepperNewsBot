@@ -2,7 +2,7 @@ from telebot import types
 import os, time, telebot
 from datetime import date
 from newsapi import NewsApiClient
-#import yfinance as yf
+import yfinance as yf
 
 #Set up API
 API_KEY = os.environ['API']  #GET TELEGRAM BOT API KEY
@@ -25,38 +25,7 @@ delay = hours_delay * 60 * 60
 #Start convo
 @bot.message_handler(commands=["start"])
 def start(message):
-    bot.reply_to(message, "Here are my commands")
-    bot.send_message(message.chat.id, "/about - About this bot")
-    bot.send_message(
-        message.chat.id,
-        "/news_rate - Set number of news that you want to get per request TODO"
-    )
-    bot.send_message(
-        message.chat.id,
-        "/daily_sender - Get daily news reminders on topics that interest you TODO"
-    )
-    bot.send_message(
-        message.chat.id,
-        "/stocks - get latest stock prices (gme, amc, nok, tsla)")
-    bot.send_message(message.chat.id, "/news - get latest hottest news")
-    bot.send_message(
-        message.chat.id,
-        "/usa_news - get latest news from greatest country in the world (USA)")
-    bot.send_message(
-        message.chat.id,
-        "/russia_news - get latest news from most communistic country (Russia)"
-    )
-    bot.send_message(
-        message.chat.id,
-        "/business_news - get latest business news from around the world")
-    bot.send_message(message.chat.id, "/tech_news - get latest news from USA")
-    bot.send_message(message.chat.id, "/media_news - get latest media news")
-    bot.send_message(message.chat.id, "/sport_news - get latest sports news")
-    bot.send_message(message.chat.id,
-                     "/science_news - get latest science news")
-    bot.send_message(message.chat.id,
-                     "/health_news - get latest health and medicare news")
-
+    bot.reply_to(message, "Here are my commands:\n\n/about - About this bot\n\n/news_rate - Set number of news that you want to get per request TODO\n\n/daily_sender - Get daily news reminders on topics that interest you TODO\n\n/stonks - get latest stock prices (gme, amc, nok, tsla)\n/news - get latest hottest news\n\n/usa_news - get latest news from greatest country in the world (USA)\n\n/russia_news - get latest news from most communistic country (Russia)\n\n/business_news - get latest business news from around the world\n\n/tech_news - get latest tech news\n\n/media_news - get latest media news\n\n/sport_news - get latest sports news\n\n/science_news - get latest science news\n\n/health_news - get latest health and medicare news")
 
 #Set daily news sender
 @bot.message_handler(commands=["daily_sender"])
@@ -282,11 +251,11 @@ def health_news(message):
 
 
 #Get latest stocks
-@bot.message_handler(commands=['stocks'])
+@bot.message_handler(commands=['stonks'])
 def get_stocks(message):
     answer = ""
     #Choose stocks
-    stocks = ["gme", "amc", "nok", "tsla", "msft", "aapl", "goog"]
+    stocks = ["gme", "amc", "nok", "tsla", "msft", "aapl", "goog", 'AAPL', 'AXP', 'BA', 'CAT', 'CSCO', 'CVX', 'DIS', 'DOW', 'GS', 'HD']
     stock_data = []
     for stock in stocks:
         data = yf.download(
