@@ -255,7 +255,8 @@ def health_news(message):
 def get_stocks(message):
     answer = ""
     #Choose stocks
-    stocks = ["gme", "amc", "nok", "tsla", "msft", "aapl", "goog", 'AAPL', 'AXP', 'BA', 'CAT', 'CSCO', 'CVX', 'DIS', 'DOW', 'GS', 'HD']
+    stocks = ["gme", "amc", "nok", "tsla", "msft", "goog", 'AAPL', 'AXP', 'BA', 'CAT', 'CSCO', 'CVX', 'DIS', 'DOW', 'GS', 'HD']
+    stock_names = ["GameStop", "AMC", "Nokia", "Tesla", "Microsoft", "Google", "Apple", "American Express Company", "The Boeing Company", "Caterpillar", "Cisco", "Chevron", "Disney", "Dow Inc."]
     stock_data = []
     for stock in stocks:
         data = yf.download(
@@ -264,7 +265,7 @@ def get_stocks(message):
         data = data.reset_index()  #Reset index so it will drop down to zero
         answer += f"---{stock}---\n"
         stock_data.append([stock])
-        columns = ['stock']
+        columns = ['Stocks']
         for index, row in data.iterrows():
             stock_position = len(stock_data) - 1
             price = round(row['Close'], 2)  #Round up the price
