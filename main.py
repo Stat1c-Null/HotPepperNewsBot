@@ -21,25 +21,13 @@ daily_news = True
 hours_delay = 1
 delay = hours_delay * 60 * 60
 
-
 #Start convo
 @bot.message_handler(commands=["start"])
 def start(message):
-    bot.reply_to(message, "Here are my commands:\n\n/about - About this bot\n\n/daily_sender - Get daily news reminders on topics that interest you TODO\n\n/stonks - get latest stock prices (gme, amc, nok, tsla)\n/news - get latest hottest news\n\n/usa_news - get latest news from greatest country in the world (USA)\n\n/russia_news - get latest news from most communistic country (Russia)\n\n/business_news - get latest business news from around the world\n\n/tech_news - get latest tech news\n\n/media_news - get latest media news\n\n/sport_news - get latest sports news\n\n/science_news - get latest science news\n\n/health_news - get latest health and medicare news")
-
-#Set daily news sender
-@bot.message_handler(commands=["daily_sender"])
-def daily_news(message):
-    bot.send_message(message.chat.id,
-                     "Would you like to turn on daily news sender ?")
-    bot.send_message(message.chat.id,
-                     "How many news would you like to get at time ?")
-    bot.send_message(
-        message.chat.id,
-        "How often would you like to receive automated messages ? Enter number of hours"
+    bot.reply_to(
+        message,
+        "Here are my commands:\n\n/about - About this bot\n\n/daily_sender - Get daily news reminders on topics that interest you TODO\n\n/stonks - get latest stock prices (gme, amc, nok, tsla)\n\n/news - get latest hottest news\n\n/usa_news - get latest news from greatest country in the world (USA)\n\n/russia_news - get latest news from most communistic country (Russia)\n\n/business_news - get latest business news from around the world\n\n/tech_news - get latest tech news\n\n/media_news - get latest media news\n\n/sport_news - get latest sports news\n\n/science_news - get latest science news\n\n/health_news - get latest health and medicare news"
     )
-    #await daily_news_send()
-
 
 #Ask user a question
 def answer(message):
@@ -51,6 +39,7 @@ def answer(message):
     bot.send_message(message.chat.id,
                      "Choose one option:",
                      reply_markup=markup)
+
 
 @bot.message_handler(commands=["yes"])
 def yes(message):
@@ -242,8 +231,23 @@ def get_stocks(message):
     bot.send_message(message.chat.id, "Alright let me take a look")
     answer = ""
     #Choose stocks
-    stocks = ['AAPL', 'MSFT', 'GOOG', 'AMZN' ,'NVDA', 'META', 'TSLA', 'XOM', 'JPM', 'WMT', 'KO', 'BAC', 'PFE', 'MCD', 'AMD', 'CSCO', 'NFLX', 'DIS', 'BA', 'INTC', 'GE', 'T', 'F', 'GME', 'AMC', 'NOK', 'AXP', 'CAT', 'CVX', 'DOW', 'GS', 'HD']
-    stock_names = ["Apple", "Microsoft", "Google", "Amazon", "NVIDIA", "META", "Tesla", "Exxon Mobil Corporation", "JPMorgan Chase & Co.", "Walmart", "The Coca Cola Company", "Bank of America", "Pfizer Inc.", "McDonald's Corporation", "Advanced Micro Devices, Inc.", "Cisco", "Netflix", "The Walt Disney Company", "The Boeing Company", "Intel Corporation", "General Electric Company", "AT&T Inc.", "Ford Motor Company","GameStop", "AMC", "Nokia", "American Express Company", "Caterpillar", "Chevron", "Dow Inc.", "Goldman Sachs Group, Inc.", "Home Depot Inc."]
+    stocks = [
+        'AAPL', 'MSFT', 'GOOG', 'AMZN', 'NVDA', 'META', 'TSLA', 'XOM', 'JPM',
+        'WMT', 'KO', 'BAC', 'PFE', 'MCD', 'AMD', 'CSCO', 'NFLX', 'DIS', 'BA',
+        'INTC', 'GE', 'T', 'F', 'GME', 'AMC', 'NOK', 'AXP', 'CAT', 'CVX',
+        'DOW', 'GS', 'HD'
+    ]
+    stock_names = [
+        "Apple", "Microsoft", "Google", "Amazon", "NVIDIA", "META", "Tesla",
+        "Exxon Mobil", "JPMorgan", "Walmart",
+        "The Coca Cola", "Bank of America", "Pfizer Inc.",
+        "McDonald's", "Advanced Micro Devices", "Cisco",
+        "Netflix", "Disney", "The Boeing",
+        "Intel", "General Electric", "AT&T Inc.",
+        "Ford Motor", "GameStop", "AMC", "Nokia",
+        "American Express", "Caterpillar", "Chevron", "Dow Inc.",
+        "Goldman Sachs Group", "Home Depot"
+    ]
     stock_name = 0
     stock_data = []
     for stock in stocks:
@@ -265,11 +269,12 @@ def get_stocks(message):
         print()
 
     #Adding column headers and making sure they have 10 spaces between them
-    answer = f"{columns[0] : <10}{columns[1] : ^10}{columns[2] : >10}\n"
+    answer = f"{columns[0] : <10}\t\t{columns[1] : ^10}{columns[2] : >10}\n\n"
     for row in stock_data:
-        answer += stock_names[stock_name]
-        answer += f"{row[0] : <10}{row[1] : ^10}{row[2] : >10}\n"
+        answer += stock_names[stock_name] + "\t\t\t\t"
+        answer += f"{row[0] : <10}${row[1] : ^10}${row[2] : >10}\n"
         stock_name += 1
+        answer += "\n"
     answer += "\nStock Data"
     print(answer)
     bot.send_message(message.chat.id, answer)
@@ -305,7 +310,7 @@ def send_price(message):
 def about(message):
     bot.send_message(
         message.chat.id,
-        "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v1.0.0 Last Update: 26/05/2023"
+        "My name is Henry and I was developed by Mikita Slabysh aka Stat1c-Null . Version v1.0.1 Last Update: 30/05/2023"
     )
 
 
